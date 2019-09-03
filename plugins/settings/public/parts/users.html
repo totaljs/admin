@@ -1,0 +1,80 @@
+<header>
+	<label><i class="fa fa-users"></i>@(Users)</label>
+	<nav data-bind="users.selected__enabled .S">
+		<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle"></i>@(Create)</button>
+		<button class="exec S" data-exec="users/edit" disabled><i class="fa fa-pencil"></i>@(Edit)</button>
+		<button class="exec S" data-exec="users/remove" disabled><i class="fa fa-trash-o"></i>@(Remove)</button>
+	</nav>
+</header>
+
+<div data---="viewbox__common.page__parent:window;margin:45;scrollbar:1">
+
+	<div class="padding" data-scope="users">
+		<div data---="table__?.items__exec:?.selected;dblclick:?/edit">
+
+			<script type="text/html" data-size="0,150px,120px,120px">
+				<tr>
+					<td><i class="far fa-user-circle"></i> <b>{{ name }}</b> <span class="gray">{{ email }}</span>{{ if isblocked }} <span class="badge badge-red badge-small ml5">@(blocked)</span>{{ fi }}</td>
+					<td>{{ position }}</td>
+					<td class="right">{{ if sa }}<span class="badge badge-small badge-green">@(admin)</span>{{ fi }}</td>
+					<td class="center">{{ dtcreated | format }}</td>
+				</tr>
+			</script>
+
+			<script type="text/html" data-size="0,120px,120px" data-display="MD,SM,XS">
+				<tr>
+					<td>{{ name }}{{ if isblocked }} <span class="badge badge-red badge-small ml5">@(blocked)</span>{{ fi }}</td>
+					<td class="right">{{ if sa }}<span class="badge badge-small badge-green">@(admin)</span>{{ fi }}</td>
+					<td class="center">{{ dtcreated | format }}</td>
+				</tr>
+			</script>
+
+			<script type="text/html" data-type="empty">
+				@(No data)
+			</script>
+
+		</div>
+	</div>
+
+</div>
+
+<div data---="importer__common.panel__if:usersform;url:panels/usersform.html;cleaner:5"></div>
+
+<script>
+	PLUGIN('users', function(exports) {
+		exports.refresh = function() {
+			ADMIN.send('settings/usersquery', '?.items');
+			ADMIN.send('settings/pluginsquery', '?.plugins');
+		};
+		exports.create = function() {
+			DEFAULT('usersform__{}');
+			SET('common.panel', 'usersform');
+		};
+
+		exports.remove = function() {
+			ADMIN.confirm('@(Are you sure you want to remove selected user?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
+				if (!index) {
+					var opt = {};
+					opt.plugin = 'settings/usersremove';
+					opt.id = users.selected.id;
+					ADMIN.send(opt, ADMIN.success('@(User has been removed sucessfully.)', exports.refresh));
+				}
+			});
+		};
+
+		exports.edit = function() {
+			if (users.selected) {
+				var opt = {};
+				opt.plugin = 'settings/usersread';
+				opt.id = users.selected.id;
+				ADMIN.send(opt, function(response) {
+					if (response.id) {
+						response.password = '';
+						SETR('usersform', response);
+						SET('common.panel', 'usersform');
+					}
+				});
+			}
+		};
+	});
+</script>

@@ -1,0 +1,97 @@
+/*auto*/
+
+html,body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+$color    : #4285F4;
+
+main { height: 100%; margin: 0; padding: 0; }
+
+.layout2 > aside, .layout3 > aside { padding: 20px 0; margin: 0; }
+.layout2 > section { margin: 0 0 0 220px; border-left: 1px solid #E0E0E0; height: 100%; }
+.layout2 > aside:first-child { float: left; width: 200px; }
+.container-fluid .layout2 > aside, .container-fluid .layout3 > aside { padding-left: 20px; }
+.container-fluid .layout3 > aside:first-child { padding-left: 0; padding-right: 20px; }
+
+.layout3 > section { margin: 0 220px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; height: 100%; }
+.layout3 > aside { float: left; width: 200px; margin: 0; }
+.layout3 > aside:first-child { float: right; width: 200px; margin: 0; }
+
+.links a, .links .link { display: block; border: 0; text-align: left; color: gray; font-size: 13px; border-radius: 3px; padding: 0 10px; line-height: 24px; margin-bottom: 1px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; position: relative; }
+.links .selected { color: black; background-color: #F0F0F0; }
+.links a i, .links .link i { width: 14px; text-align: center; font-size: 12px; margin-right: 8px; color: $color; }
+.links a:hover, .links .link:hover { text-decoration: none; color: black; }
+.links a b, .links .link b { position: absolute; font-size: 10px; right: 5px; background-color: $color; color: white; width: 16px; height: 16px; padding: 1px 0 0 0; border-radius: 100px; text-align: center; margin: 2px 0 0; }
+
+.caption { font-size: 12px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; color: black; border-bottom: 1px solid #E0E0E0; padding: 0 0 7px 0; text-align: left; }
+.caption i { margin-right: 5px; color: $color; }
+
+.panel { background-color: white; border-radius: 3px; border: 1px solid #E9E9E9; text-align: left; }
+.panel > label { display: block; padding: 15px 20px; border-bottom: 1px solid #E0E0E0; font-size: 14px; font-weight: bold; border-radius: 3px 3px 0 0; }
+.panel > label i { margin-right: 5px; }
+.panel figure { padding: 20px; position: relative; }
+.panel figure:last-child { border-radius: 0 0 3px 3px; }
+
+.button { background-color: $color; border: 0; color: white; cursor: pointer; outline: 0; width: 100%; border-radius: 2px; height: 40px; font-family: Arial; font-weight: bold; }
+.button:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.1); opacity: 0.9; }
+.button:disabled { background-color: #E0E0E0; color: silver; cursor: not-allowed; box-shadow: none; opacity: 1; }
+.button i { margin-right: 7px; }
+
+.bg-yellow { background-color: #FFFFD5; }
+.bg-smoke { background-color: #F8F8F8; }
+.container-fluid { padding-left: 0; padding-right: 0; }
+
+header { height: 45px; padding: 0 10px 0 0; background-color: #F8F8F8; }
+header label { float: left; font-size: 14px; font-weight: bold; background-color: white; height: 26px; line-height: 26px; margin: 10px 0 0; padding: 0 10px 0; border-radius: 0 2px 2px 0; }
+header label i { color: $color; }
+header nav { float: right; margin-top: 10px; }
+header nav button { outline: 0; background-color: white; border: 1px solid transparent; border: 1px solid #E0E0E0; border-left: 0; font-size: 12px; height: 26px; padding: 0 8px; margin: 0; color: black; min-width: 80px; position: relative; display: inline-block; line-height: 24px; }
+header nav button i, header label i { margin-right: 5px; }
+header nav button:first-child { border-left: 1px solid #E0E0E0; border-top-left-radius: 2px; border-bottom-left-radius: 2px; }
+header nav button:last-child { border-top-right-radius: 2px; border-bottom-right-radius: 2px; }
+header nav button:hover { background-color: #FAFAFA; }
+header nav button:disabled { color: silver; cursor: not-allowed; background-color: #F0F0F0; box-shadow: none; }
+header nav button:disabled i { color: silver; }
+header button .fa-check-circle, header button .fa-plus-circle, header button .fa-check { color: #68B25B; }
+header button .fa-times, header button .fa-times-circle, header button .fa-trash-o { color: #e73323; }
+header .highlight { background-color: #FFFFD5; }
+
+footer { border-top: 1px solid #E0E0E0; line-height: 45px; height: 45px; padding: 0 10px; }
+footer .button { height: 26px; position: relative; display: inline-block; width: auto; padding: 0 20px; line-height: 26px; font-size: 12px; }
+footer .cancel { margin: 0 10px; cursor: pointer; color: gray; font-size: 12px; }
+footer .cancel i { margin-right: 5px; }
+footer .cancel:hover { color: #777777; }
+
+.auto { margin: 0 auto; }
+.maxwidth { max-width: 960px; }
+
+.badge { font-size: 12px; padding: 4px 6px; border-radius: 2px; background-color: #F0F0F0; line-height: 12px; vertical-align: middle; margin-top: -2px; position: relative; display: inline-block; color: white; margin-right: 5px; }
+.badge .fa { margin-right: 3px; }
+.badge-blue { background-color: #4CC1E9; }
+.badge-red { background-color: #DA4453; }
+.badge-green { background-color: #8CC152; }
+.badge-yellow { background-color: #EFDC05; }
+.badge-orange { background-color: #E9573F; }
+.badge-gray { background-color: #606060; }
+.badge-purple { background-color: #967ADC; }
+.badge-pink { background-color: #D770AD; }
+.badge-silver { background-color: #E0E0E0; color: gray; }
+.badge-large { padding: 3px 8px; font-size: 14px; line-height: 16px; }
+.badge-large .fa { margin-right: 5px; }
+.badge-small { font-size: 10px; padding: 0px 3px 1px; }
+.uppercase { text-transform: uppercase; }
+
+.messagebox { padding: 5px; border: 2px solid #68B25B; border-radius: 2px; font-size: 12px; color: #68B25B; margin-bottom: 10px; }
+.messagebox-info { border-color: #2e67c5; color: #2e67c5; }
+.messagebox-error { border-color: #D63A32; color: #D63A32; }
+
+@media(max-width:767px) {
+	.links a, .links .link { font-size: 14px; line-height: 26px; }
+	.layout2 > section, .layout3 > section { margin: 0; border-left: 0; }
+	.layout2 > aside, .layout3 > aside { display: none; }
+	.layout-show-left .layout2 > aside:first-child, .layout-show-right .layout2 > aside:first-child { position: fixed; left: -300px; transition: all 0.3s; right: 300px; top: 0; width: auto; bottom: 0; display: block; background-color: white; z-index: 10; padding-right: 20px; box-shadow: 10px 0 10px rgba(0,0,0,0.05); }
+	.layout-show-left-animate .layout2 > aside:first-child { left: 0; right: 0; }
+	.layout-show-left .layout3 > aside:first-child, .layout-show-right .layout3 > aside:first-child { position: fixed; left: 300px; transition: all 0.3s; right: -300px; top: 0; width: auto; bottom: 0; display: block; background-color: white; z-index: 10; padding-right: 20px; box-shadow: -10px 0 10px rgba(0,0,0,0.05); }
+	.layout-show-left-animate .layout3 > aside:first-child { left: 0; right: 0; }
+	.layout-show-left .layout3 > aside:first-child { position: fixed; left: 300px; transition: all 0.3s; right: -300px; top: 0; width: auto; bottom: 0; display: block; background-color: white; z-index: 10; padding-right: 20px; }
+	.layout-show-right .layout3 > aside:nth-child(1) { position: fixed; left: -300px; transition: all 0.3s; right: 300px; top: 0; width: auto; bottom: 0; display: block; background-color: white; z-index: 10; padding-right: 20px; }
+	.layout-show-left-animate .layout3 > aside:first-child, .layout-show-right-animate .layout3 > aside:first-child { left: 0; right: 0; }
+}

@@ -1,0 +1,55 @@
+<div data---="panel__common.panel__if:usersform;icon:user-circle;reload:usersform/refresh;autofocus:1;scrollbar:0" class="hidden">
+	<div data-scope="usersform">
+		<div data---="viewbox__common.panel__parent:.ui-panel-body;margin:47;scrollbar:1">
+			<div class="padding">
+				<div data---="input__?.name__required:1;maxlength:50;placeholder:@(John Total)__''" class="m">@(User name)</div>
+				<div data---="input__?.position__maxlength:30;placeholder:@(Editor)__''" class="m">@(Position)</div>
+				<div data---="input__?.email__required:1;type:email__'@'" class="m">@(Email address)</div>
+				<div data-bind="?.id__show" class="hidden">
+					<div data---="checkbox__?.ispassword__null__false">@(Change password)</div>
+				</div>
+				<div data-bind="?__show:!value.id || value.ispassword__track:id,ispassword" class="hidden mt10">
+					<div data---="input__?.password__required:1;camouflage:1;maxlength:30__GUID(10)" class="m">@(Password)</div>
+				</div>
+				<div data---="checkbox__?.isaudio__null__true">@(Enable sounds)</div>
+				<div data---="checkbox__?.istwofactor__disabled:1__false">@(Enable two factor authorization)</div>
+				<div data---="checkbox__?.sa__null__false" class="b red">@(Super administrator)</div>
+				<div data---="checkbox__?.isblocked__null__false" class="b">@(Account is blocked)</div>
+				<div data-bind="?.id__hide" class="hidden">
+					<div data---="checkbox__?.iswelcome__null__true">@(Send a welcome email)</div>
+				</div>
+				<br />
+				<div class="caption"><i class="fa fa-plug"></i>@(Plugins)</div>
+				<div data---="plugins__?.plugins__datasource:users.plugins__{}"></div>
+			</div>
+		</div>
+		<footer data---="validation__?">
+			<button name="submit" class="button uppercase exec" data-exec="?/submit" disabled>@(Submit form)</button>
+			<span class="cancel">@(Cancel)</span>
+		</footer>
+	</div>
+</div>
+
+<script>
+	PLUGIN('usersform', function(exports) {
+		exports.refresh = function(panel) {
+			var model = GET('?') || EMPTYOBJECT;
+			panel.reconfigure({ title: model.id ? '@(Edit user)' : '@(Create user)' });
+		};
+		exports.submit = function() {
+			var model = CLONE(GETR('?'));
+			var opt = {};
+			opt.plugin = 'settings/users' + (model.id ? 'update' : 'insert');
+			opt.id = model.id;
+			opt.data = model;
+
+			if (model.id && !model.ispassword)
+				model.password = '*****';
+
+			ADMIN.send(opt, ADMIN.success('@(User has been updated successfully.)', function() {
+				NULL('common.panel');
+				EXEC('users/refresh');
+			}));
+		};
+	});
+</script>

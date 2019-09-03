@@ -1,0 +1,127 @@
+<header>
+	<label><i class="far fa-user-circle"></i>@(Account)</label>
+</header>
+<div data---="viewbox__common.page__parent:window;margin:45;scrollbar:1">
+	<br class="hidden-xs" />
+	<div class="padding">
+		<div class="maxwidth auto" data-scope="account">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-3">
+					<div class="panel">
+						<label>@(Your personal information)</label>
+						<figure>
+							<div data---="input__?.name__maxlength:50;required:1" class="m">@(Account name)</div>
+							<div data---="input__?.email__type:email;required:1">@(Email address)</div>
+							<div class="help m">@(Email address is used as a login name)</div>
+							<div data---="checkbox__?.isaudio">@(Allow sounds)</div>
+							<div data---="checkbox__?.istwofactor">@(Enable two factor authorization)</div>
+							<div data---="checkbox__?.ispassword">@(Change password)</div>
+
+							<div data-bind="?.ispassword__show" class="hidden padding bg-yellow mt10">
+								<div data---="input__?.password__camouflage:1;maxlength:30;required:1__''">@(Type a new password)</div>
+								<div data---="passwordmeter__?.password__weak:@(Weak);good:@(Good);strong:@(Strong);text:@(Password strength);short:@(Short password)"></div>
+							</div>
+
+							<div data-bind="?.istwofactor2__show" class="padding bg-smoke hidden" style="margin:20px 0">
+								<div data-bind="%totpqrcode__template">
+									<script type="text/html">
+										<div class="caption"><i class="fa fa-qrcode"></i>@(Scan QR Code for 2FA)</div>
+										<div class="help m">@(First of all, you need to download an application for Android or iOS, and then you need to scan this QR Code into it. The application will generate a different password before you sign-in each time.)</div>
+										<table class="table table-small table-bordered">
+											<tr>
+												<td class="b">Google Authenticator</td>
+												<td style="width:80px" class="center"><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank"><i class="fab fa-android"></i> Android</a></td>
+												<td style="width:80px" class="center"><a href="https://apps.apple.com/us/app/google-authenticator/id388497605" target="_blank"><i class="fab fa-apple"></i> iOS</a></td>
+											</tr>
+											<tr>
+												<td class="b">Microsoft Authenticator</td>
+												<td class="center"><a href="https://play.google.com/store/apps/details?id=com.azure.authenticator" target="_blank"><i class="fab fa-android"></i> Android</a></td>
+												<td class="center"><a href="https://apps.apple.com/us/app/microsoft-authenticator/id983156458" target="_blank"><i class="fab fa-apple"></i> iOS</a></td>
+											</tr>
+										</table>
+										<br />
+										<div class="center">
+											<div style="position:relative;display:inline-block;padding:15px;border-radius:3px;background-color:white;margin-bottom:10px">
+												<img src="{{ value.qrcode }}" border="0" alt="@(One-Time password)" />
+											</div>
+											<div class="help"><i class="fa fa-key"></i><b>@(Your private key:)</b><div class="mt5"><code>{{ value.secret }}</code></div></div>
+											<hr />
+										</div>
+									</script>
+								</div>
+								<div class="center">
+									<h3><i class="fa fa-keyboard-o"></i> @(Enter the code from the app here:)</h3>
+									<div data---="pin__%totpcode__mask:false"></div>
+								</div>
+							</div>
+						</figure>
+						<hr class="nmt nmb" />
+						<figure data---="validation__?">
+							<button name="submit" class="button exec" data-exec="?/submit" disabled><i class="fa fa-floppy-o"></i>SUBMIT</button>
+						</figure>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br class="hidden-xs" />
+</div>
+
+<script>
+	PLUGIN('account', function(exports) {
+
+		exports.refresh = function() {
+			ADMIN.send('settings/accountread', '?');
+		};
+
+		exports.submit = function() {
+			var opt = {};
+			opt.plugin = 'settings/accountsave';
+			opt.data = GETR('?');
+			if (!opt.data.ispassword)
+				opt.data.password = '***';
+			ADMIN.send(opt, ADMIN.success('@(Profile has been saved successfully)', function() {
+				SETR('?.ispassword', false);
+			}));
+		};
+
+		WATCH('?.istwofactor', function(path, value, type) {
+			if (value && type === 2) {
+				// regenerate TOTP
+				SET('?.istwofactor2', true);
+				exports.totp();
+			} else {
+				SET('?.istwofactor2', false);
+				SET('?.secret', '');
+			}
+		});
+
+		WATCH('%totpcode', function(path, value, type) {
+			if (value.trim().indexOf(' ') === -1) {
+				var opt = {};
+				opt.plugin = 'settings/accountotpverify';
+				opt.data = { code: value, secret: account.secret };
+				ADMIN.send(opt, function(response) {
+					if (response instanceof Array)
+						ADMIN.message(response[0].error, 'warning');
+					else {
+						ADMIN.message('@(Your code is valid. <b>Do not forget to save settings</b>.)');
+						SET('?.istwofactor2', false);
+					}
+				});
+			}
+		});
+
+		exports.totp = function() {
+			var opt = {};
+			opt.plugin = 'settings/accountotp';
+			ADMIN.send(opt, function(response) {
+				SET('account.secret', response.secret);
+				SET('%totpqrcode', response);
+				var pin = exports.element.FIND('pin');
+				pin && pin.find('input').eq(0).focus();
+			});
+		};
+	});
+
+</script>

@@ -1,0 +1,122 @@
+<header>
+	<label><i class="fa fa-wrench"></i>@(Settings)</label>
+</header>
+
+<div data---="viewbox__common.page__parent:window;margin:45;scrollbar:1">
+	<div data-scope="settings" class="padding">
+		<br class="hidden-xs" />
+		<div class="maxwidth auto">
+			<div class="panel">
+				<figure>
+
+					<div data---="input__?.url__type:url;required:1__settingsurl" class="m">@(URL address)</div>
+
+					<div class="caption"><i class="far fa-envelope"></i>@(Email settings)</div>
+
+					<div class="row">
+						<div class="col-sm-4 m">
+							<div data---="input__?.smtp__maxlength:100__'localhost'">@(SMTP server)</div>
+							<div class="help">@(Mails will be sent from sender email address)</div>
+						</div>
+						<div class="col-sm-8 m">
+							<div data---="input__?.smtpsettings__null__settingssmtpsettings">@(SMTP settings)</div>
+							<div class="help">@(SMTP settings have to be in valid JSON format, according to the Total.js documentation.) <a href="https://docs.totaljs.com/latest/en.html#pages~Troubleshooting~(smtp-settings-for-gmail-office-and-zoho)" target="_blank">@(Documentation)</a></div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-4 m">
+							<div data---="input__?.emailsender__type:email__''">@(Sender email address)</div>
+							<div class="help">@(Mails will be sent from sender email address)</div>
+						</div>
+						<div class="col-sm-4 m">
+							<div data---="input__?.emailrecipient__type:email__''">@(Recipient email address)</div>
+							<div class="help">@(E.g. recipient for contact forms)</div>
+						</div>
+					</div>
+
+					<hr class="nmt" style="margin-bottom:10px" />
+
+					<div data-bind="%settingssmtpresponse__template">
+						<script type="text/html">
+							{{ if value }}
+								{{ if value.success }}
+									<div class="messagebox"><i class="fa fa-check-circle"></i> @(SMTP server is <b>configured correctly</b>.)</div>
+								{{ else }}
+									<div class="messagebox messagebox-error"><i class="fa fa-warning"></i> {{ value[0].error }}</div>
+								{{ fi }}
+							{{ fi }}
+						</script>
+					</div>
+
+					<div>
+						<span class="link exec fs12" data-exec="?/verify"><i class="fa fa-angle-right mr5"></i>@(Verify SMTP server)</span>
+					</div>
+				</figure>
+				<figure class="bg-yellow">
+					<div class="caption"><i class="fa fa-cogs"></i>@(Security settings)</div>
+					<div class="help nmt m"><i class="fa fa-warning"></i>@(The settings below is applied only for administration area. Changing of this setup may affect your session.)</div>
+					<div class="row">
+						<div class="col-sm-4 m">
+							<div data---="input__?.cookie__maxlength:30;required:1__'admin'">@(Cookie name)</div>
+						</div>
+						<div class="col-sm-4 m">
+							<div data---="input__?.cookie_expiration__maxlength:30;required:1__'3 days'">@(Cookie expiration)</div>
+							<div class="help">@(Example: <code>2 days</code> or <code>3 minutes</code>)</div>
+						</div>
+						<div class="col-sm-4 m">
+							<div data---="input__?.cookie_key__maxlength:30;required:1;camouflage:1__GUID(10)">@(Secret key)</div>
+							<div class="help">
+								<span class="link exec" data-exec="settings/generatekey"><i class="fa fa-calculator"></i>@(Generate new secret key)</span>
+							</div>
+						</div>
+					</div>
+
+				</figure>
+				<figure data---="validation__settings">
+					<button name="submit" class="button exec uppercase" data-exec="settings/submit" disabled><i class="fa fa-floppy-o"></i>@(Submit form)</button>
+				</figure>
+			</div>
+			<br class="hidden-xs" />
+		</div>
+	</div>
+</div>
+
+<script>
+
+	var settingsurl = location.protocol + '//' + location.hostname + (location.port && location.port !== 80 ? ':' + (location.port) : '');
+	var settingssmtpsettings = '{"user":"","password":"","timeout":2000}';
+
+	PLUGIN('settings', function(exports) {
+
+		exports.refresh = function() {
+			ADMIN.send('settings/settingsread', function(response) {
+				SETR('?', response);
+				response.smtp && exports.verify();
+			});
+		};
+
+		exports.submit = function() {
+			var opt = {};
+			opt.plugin = 'settings/settingssave';
+			opt.data = GETR('?');
+			ADMIN.send(opt, ADMIN.success('@(Settings have been saved successfully.)'));
+		};
+
+		exports.generatekey = function() {
+			SET2('?.cookie_key', GUID(10));
+		};
+
+		exports.verify = function() {
+			var model = GET('?');
+			if (model.smtp) {
+				var opt = {};
+				opt.plugin = 'settings/settingssmtp';
+				opt.data = { smtp: model.smtp, smtpsettings: model.smtpsettings };
+				ADMIN.send(opt, function(response) {
+					SET('%settingssmtpresponse', response);
+				});
+			}
+		};
+	});
+</script>

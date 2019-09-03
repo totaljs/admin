@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@18.css" />
+	<link rel="stylesheet" href="default.css" />
+	<script src="https://cdn.componentator.com/spa.min@18.js"></script>
+	<script src="default.js"></script>
+</head>
+<body class="invisible" data---="exec">
+
+	<div data---="LAZY directory"></div>
+
+	<div class="container-fluid">
+		<main class="layout2">
+
+			<aside>
+				<div class="caption">@(Options)</div>
+				<nav class="links" data---="selected__common.page__selector:.link">
+					<span class="link exec" data-exec="main/page" data-if="account"><i class="far fa-user-circle"></i>@(Account)</span>
+					<span class="link exec hidden" data-exec="main/page" data-bind="user.roles__hide:main/roles" data-if="users"><i class="fa fa-users"></i>@(Users)</span>
+					<span class="link exec hidden" data-exec="main/page" data-bind="user.roles__hide:main/roles" data-if="settings"><i class="fa fa-wrench"></i>@(Settings)</span>
+				</nav>
+			</aside>
+
+			<section>
+				<div class="invisible hidden" data---="part__common.page__if:account;url:parts/account.html;cleaner:5;reload:account/refresh"></div>
+				<div class="invisible hidden" data---="part__common.page__if:users;url:parts/users.html;cleaner:5;reload:users/refresh"></div>
+				<div class="invisible hidden" data---="part__common.page__if:settings;url:parts/settings.html;cleaner:5;reload:settings/refresh"></div>
+			</section>
+
+		</main>
+	</div>
+
+	<script>
+
+		var common = {};
+
+		DEF.dateformat = '@(yyyy-MM-dd)';
+		CACHEPATH('common.page', '1 day');
+
+		if (NAV.query.client) {
+			IMPORT(NAV.query.client + '.js');
+			IMPORT(NAV.query.client + '.css');
+		}
+
+		function INIT() {
+			if (!common.page)
+				SET('common.page', 'account');
+		}
+
+		PLUGIN('main', function(exports) {
+
+			exports.page = function(el) {
+				ADMIN.hidemenu();
+				SET('common.page', el.attrd('if'));
+			};
+
+			exports.roles = function(roles, path, el) {
+				return roles == null ? true : !user.sa && roles.indexOf(el.attrd('if')) === -1;
+			};
+		});
+
+	</script>
+</body>
+</html>
