@@ -18,7 +18,12 @@
 				<div data-bind="?.id__hide" class="hidden">
 					<div data---="checkbox__?.iswelcome__null__true">@(Send a welcome email)</div>
 				</div>
-				<br />
+			</div>
+			<div class="padding bg-smoke">
+				<div data---="input__?.plugin__dirsource:users.plugins;placeholder:@(Choose a plugin);dirplaceholder:@(Search plugin)__''"><b>@(Default plugin)</b></div>
+				<div class="help">@(This plugin will be executed when the user opens admin for the first time.)</div>
+			</div>
+			<div class="padding">
 				<div class="caption"><i class="fa fa-plug"></i>@(Plugins)</div>
 				<div data---="plugins__?.plugins__datasource:users.plugins__{}"></div>
 			</div>

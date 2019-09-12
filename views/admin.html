@@ -53,7 +53,9 @@
 	<script>
 
 		var user = PARSE('#userdata');
-		var common = {};
+
+		CACHEPATH('common.url', '1 week');
+		MAKE('common', NOOP);
 
 		PLUGIN('main', function(exports) {
 
@@ -70,7 +72,7 @@
 			};
 
 			exports.runapp = function(el) {
-				var id = el.attrd('id');
+				var id = el instanceof jQuery ? el.attrd('id') : el;
 				SET('common.id', id);
 				SET('common.url', '@{#}/_{0}/index.html?client={1}'.format(id, encodeURIComponent('@{#}/admin-client')));
 				SET('common.progress', 0);
@@ -87,6 +89,9 @@
 			};
 
 			$(document).on('click', 'header', exports.hideapps);
+
+			if (!common.url && user.plugin && user.plugins[user.plugin])
+				exports.runapp(user.plugin);
 		});
 
 		ON('knockknock', function(interval) {

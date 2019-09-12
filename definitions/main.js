@@ -73,8 +73,27 @@ FUNC.refreshplugins = function(callback) {
 			if (!is)
 				delete obj.permissions;
 
+			// load schemas and operations
 			MAIN.plugins.push(obj);
-			next();
+
+			var path = PATH.root('plugins/{0}/operations/'.format(plugin));
+			U.ls(path, function(files) {
+
+				for (var i = 0; i < files.length; i++) {
+					if (files[i].substring(files[i].length - 3) === '.js')
+						REQUIRE('plugins/{0}/operations/{1}'.format(plugin, files[i].substring(path.length)));
+				}
+
+				path = PATH.root('plugins/{0}/schemas/'.format(plugin));
+				U.ls(path, function(files) {
+					for (var i = 0; i < files.length; i++) {
+						if (files[i].substring(files[i].length - 3) === '.js')
+							REQUIRE('plugins/{0}/schemas/{1}'.format(plugin, files[i].substring(path.length)));
+					}
+					next();
+				});
+			});
+
 		}, callback);
 
 	});

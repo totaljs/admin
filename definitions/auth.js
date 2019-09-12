@@ -1,7 +1,7 @@
 MAIN.session = SESSION();
 
 MAIN.session.ondata = function(meta, next) {
-	NOSQL('users').read().rule((doc, id) => !doc.isblocked && doc.id === id, meta.id).fields('id,name,plugins,sa').callback(function(err, response) {
+	NOSQL('users').read().rule((doc, id) => !doc.isblocked && doc.id === id, meta.id).fields('id,name,plugins,plugin,sa').callback(function(err, response) {
 		if (response) {
 
 			var arr = response.name.split(' ');

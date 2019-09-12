@@ -9,6 +9,7 @@ NEWSCHEMA('Users', function(schema) {
 	schema.define('isaudio', Boolean);
 	schema.define('isblocked', Boolean);
 	schema.define('iswelcome', Boolean);
+	schema.define('plugin', 'String(30)'); // A default plugin
 	schema.define('plugins', 'Object'); // { pluginname: roles }
 
 	schema.middleware(function($, next) {
