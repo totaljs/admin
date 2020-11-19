@@ -33,7 +33,7 @@ NEWSCHEMA('Account', function(schema) {
 	schema.addWorkflow('notifications', function($) {
 
 		// Updates all user sessions
-		MAIN.sessions.list(model.userid, function(err, sessions) {
+		MAIN.session.list(model.userid, function(err, sessions) {
 			for (var i = 0; i < sessions.length; i++) {
 				var session = sessions[i];
 
